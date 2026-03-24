@@ -1,14 +1,18 @@
 import streamlit as st
-import gspread
+import json
 from oauth2client.service_account import ServiceAccountCredentials
-from datetime import datetime
+import streamlit as st
+import gspread
 
-# Connect to Google Sheets
+# Google Sheets scope
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("service_account.json", scope)
+
+# Load credentials from Streamlit Secrets instead of local JSON
+service_account_info = json.loads(st.secrets["GCP_SERVICE_ACCOUNT"])
+creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
 client = gspread.authorize(creds)
 
-# Open Google Sheet
+# Open the sheet
 sheet = client.open("TPS_Transactions").sheet1
 
 # Item database
